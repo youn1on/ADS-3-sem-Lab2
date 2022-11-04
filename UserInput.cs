@@ -12,4 +12,19 @@ public class UserInput
             Console.WriteLine("Such file doesn't exist or has invalid structure! Please, select another file.");
         }
     }
+
+    public static bool WantToSelect()
+    {
+        ConsoleKey key;
+        while (true)
+        {
+            Console.WriteLine("Do you want to select existing file or generate a new one? " +
+                              "Press 's' to select and 'g' to generate");
+            key = Console.ReadKey().Key;
+            if (key == ConsoleKey.S) return true;
+            if (key == ConsoleKey.G) return false;
+            Console.WriteLine("Invalid key pressed");
+        }
+       
+    }
 }

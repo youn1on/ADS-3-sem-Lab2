@@ -11,6 +11,17 @@ public struct State
         ManhattanDistance = GetManhattanDistance(field);
     }
 
+    public int[] ToSequence()
+    {
+        int[] sequence = new int[9];
+        for (int i = 0; i < 3; i++)
+        {
+            Field[i].CopyTo(sequence, i*3);
+        }
+
+        return sequence;
+    }
+    
     private static int GetManhattanDistance(int[][] field)
     {
         int manhattanDistance = 0;
@@ -24,5 +35,23 @@ public struct State
         }
 
         return manhattanDistance;
+    }
+
+    public bool Equals(State state)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if (Field[i] != state.Field[i]) return false;
+            }
+        }
+
+        return true;
+    }
+
+    public State[] GetChildren()
+    {
+        throw new NotImplementedException();
     }
 }

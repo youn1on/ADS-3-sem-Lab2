@@ -4,7 +4,20 @@
     {
         static void Main(string[] args)
         {
-            PuzzleGenerator.GenerateFile("test.txt");
+            string filename;
+            if (UserInput.WantToSelect()) filename = UserInput.GetFilename();
+            else
+            {
+                filename = "generated.txt";
+                PuzzleGenerator.GenerateFile(filename);
+            }
+
+            State startState = StartStateFactory.GetStartState(filename);
+            if (!SequenceAnalyzer.IsSolvable(startState.ToSequence()))
+            {
+                Console.WriteLine("This 8-puzzle is not solvable");
+                Environment.Exit(1);
+            }
         }
     }
 }

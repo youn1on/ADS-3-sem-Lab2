@@ -22,15 +22,4 @@ public static class SequenceAnalyzer
     {
         return CountInversions(sequence) % 2 == 0;
     }
-    
-    public static bool IsSolvable(int[][] state)
-    {
-        int[] sequence = new int[9];
-        for (int i = 0; i < 3; i++)
-        {
-            state[i].CopyTo(sequence, i*3);
-        }
-
-        return IsSolvable(sequence);
-    }
 }
