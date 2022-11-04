@@ -4,7 +4,7 @@ public static class SequenceAnalyzer
 {
     public static int CountInversions(int[] sequence)
     {
-        if (!IsValidSequence(sequence)) throw new ArgumentException("Invalid sequence.");
+        if (!Validator.IsValidSequence(sequence)) throw new ArgumentException("Invalid sequence.");
         int inversionsNumber = 0;
         for (int i = 0; i < sequence.Length; i++)
         {
@@ -16,22 +16,7 @@ public static class SequenceAnalyzer
         }
         return inversionsNumber;
     }
-
-    public static bool IsValidSequence(int[] sequence)
-    {
-        if (sequence.Length != 9) return false;
-        HashSet<int> elements = new HashSet<int>();
-        foreach (int element in sequence) 
-        {
-            if (element is < 1 or > 9 || elements.Contains(element))
-            {
-                return false;
-            }
-
-            elements.Add(element);
-        }
-        return true;
-    }
+    
 
     public static bool IsSolvable(int[] sequence)
     {
