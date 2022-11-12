@@ -6,25 +6,36 @@ public class AStar
     public static Node? Solve(State startState)
     {
         Node startNode = new Node(startState, 0, null);
-        HashSet<State> closedStates = new HashSet<State>();
+        HashSet<int> closedStates = new HashSet<int>();
         PriorityQueue<Node, int> openStates = new PriorityQueue<Node, int>();
         openStates.Enqueue(startNode, 0);
         while (openStates.Count != 0)
         {
             Node current = openStates.Dequeue();
-            if (closedStates.Contains(current.State)) continue;
-            closedStates.Add(current.State);
+            if (closedStates.Contains(current.State.Hash)) continue;
+            closedStates.Add(current.State.Hash);
             if (current.State.Equals(goal)) return current;
             State[] children = current.State.GetChildren();
-            Node child;
             foreach (State nextState in children)
             {
-                if (closedStates.Contains(nextState)) continue;
+                if (closedStates.Contains(nextState.Hash)) continue;
                 openStates.Enqueue(new Node(nextState, current.Depth + 1, current),
                     nextState.ManhattanDistance + current.Depth + 1);
             }
         }
 
         return null;
+    }
+
+    public static Stack<State> TraceRoute(Node? node)
+    {
+        Stack<State> route = new Stack<State>();
+        while (node is not null)
+        {
+            route.Push(node.State);
+            node = node.Previous;
+        }
+
+        return route;
     }
 }

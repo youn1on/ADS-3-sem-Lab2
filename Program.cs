@@ -18,6 +18,10 @@
                 Console.WriteLine("This 8-puzzle is not solvable");
                 Environment.Exit(1);
             }
+
+            Node? goal = AStar.Solve(startState);
+            Stack<State> route = AStar.TraceRoute(goal);
+            ResultOutput.PrintResult(route);
         }
     }
 }

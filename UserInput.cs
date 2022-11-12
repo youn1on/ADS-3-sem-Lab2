@@ -21,6 +21,7 @@ public class UserInput
             Console.WriteLine("Do you want to select existing file or generate a new one? " +
                               "Press 's' to select and 'g' to generate");
             key = Console.ReadKey().Key;
+            Console.Write("\r");
             if (key == ConsoleKey.S) return true;
             if (key == ConsoleKey.G) return false;
             Console.WriteLine("Invalid key pressed");

@@ -13,7 +13,7 @@ public static class StartStateFactory
             string[] numbers = lines[i].Split(" ", StringSplitOptions.RemoveEmptyEntries);
             for (int j = 0; j < numbers.Length; j++)
             {
-                field[i][j] = int.Parse(numbers[j]);
+                field[i][j] = numbers[j] == "_" ? 9 : int.Parse(numbers[j]);
             }
         }
 
