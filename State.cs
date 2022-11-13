@@ -2,39 +2,35 @@
 
 public struct State
 {
-    private byte[][] Field { get; }
-    public int ManhattanDistance { get; }
-    public int Hash { get; }
+    public byte ManhattanDistance { get; }
+    public int Field { get; }
 
-    public State(byte[][] field)
+    public State(int field)
     {
-        Field = field;
         ManhattanDistance = GetManhattanDistance(field);
-        Hash = GetHash(field);
+        Field = field;
     }
 
     public int[] ToSequence()
     {
         int[] sequence = new int[9];
-        for (int i = 0; i < 3; i++)
+        int source = Field;
+        for (int i = 8; i >= 0; i--, source /= 10)
         {
-            Field[i].CopyTo(sequence, i*3);
+            sequence[i] = source % 10;
         }
 
         return sequence;
     }
-    
-    private static int GetManhattanDistance(byte[][] field)
+
+    private static byte GetManhattanDistance(int field)
     {
-        int manhattanDistance = 0;
-        for (int i = 0; i < field.Length; i++)
+        byte manhattanDistance = 0;
+        for (int source = field, i = 8; i > 0; i--, source /= 10)
         {
-            for (int j = 0; j < field[0].Length; j++)
-            {
-                int value = field[i][j];
-                if (value == 9) continue;
-                manhattanDistance += Math.Abs(i - (value - 1) / 3) + Math.Abs(j - (value - 1) % 3);
-            }
+            int value = source % 10;
+            if (value == 9) continue;
+            manhattanDistance += (byte)(Math.Abs(i/3 - (value - 1) / 3) + Math.Abs(i%3 - (value - 1) % 3));
         }
 
         return manhattanDistance;
@@ -42,112 +38,69 @@ public struct State
 
     public bool Equals(State state)
     {
-        return Hash == state.Hash;
+        return Field == state.Field;
     }
 
-    // public State[] GetChildren()
-    // {
-    //     int freeI, freeJ;
-    //     if (!TryFindFreeCell(out freeI, out freeJ))
-    //         throw new ApplicationException("Invalid field structure");
-    //     List<(int, int)> moves = GetPossibleMoves(freeI, freeJ);
-    //     State[] children = new State[moves.Count];
-    //
-    //     for (int i = 0; i < moves.Count; i++)
-    //     {
-    //         children[i] = MakeMove(freeI, freeJ, moves[i]);
-    //     }
-    //
-    //     return children;
-    // }
-    
     public IEnumerable<State> GetChildren()
     {
-        int freeI, freeJ;
-        if (!TryFindFreeCell(out freeI, out freeJ))
+        byte freeIndex;
+        if (!TryFindFreeCell(out freeIndex))
             throw new ApplicationException("Invalid field structure");
-        foreach (var move in GetPossibleMoves(freeI, freeJ))
+        foreach (byte moveIndex in GetPossibleMoves(freeIndex))
         {
-            yield return MakeMove(freeI, freeJ, move);
+            yield return MakeMove(freeIndex, moveIndex);
         }
     }
 
-    private bool TryFindFreeCell(out int i, out int j)
+    private bool TryFindFreeCell(out byte index)
     {
-        for (i = 0; i < 3; i++)
+        int source = Field;
+        for (index = 8; index < 9; index--, source /= 10)
         {
-            for (j = 0; j < 3; j++)
-            {
-                if (Field[i][j] == 9) return true;
-            }
+            if (source % 10 == 9) return true;
         }
-        
-        i = j = -1;
+
         return false;
     }
-    
-    // private static List<(int, int)> GetPossibleMoves(int freeI, int freeJ)
-    // {
-    //     List<(int, int)> moves = new List<(int, int)>();
-    //     if (freeI < 2) moves.Add((freeI+1, freeJ));
-    //     if (freeI > 0) moves.Add((freeI-1, freeJ));
-    //     if (freeJ < 2) moves.Add((freeI, freeJ+1));
-    //     if (freeJ > 0) moves.Add((freeI, freeJ-1));
-    //     return moves;
-    // }
-    
-    private static IEnumerable<(int, int)> GetPossibleMoves(int freeI, int freeJ)
+
+    private static IEnumerable<byte> GetPossibleMoves(byte freeIndex)
     {
-        if (freeI < 2) yield return (freeI+1, freeJ);
-        if (freeI > 0) yield return (freeI-1, freeJ);
-        if (freeJ < 2) yield return (freeI, freeJ+1);
-        if (freeJ > 0) yield return (freeI, freeJ-1);
+        if (freeIndex < 6) yield return (byte)(freeIndex+3);
+        if (freeIndex > 2) yield return (byte)(freeIndex-3);
+        if (freeIndex % 3 < 2) yield return (byte)(freeIndex+1);
+        if (freeIndex % 3 > 0) yield return (byte)(freeIndex-1);
     }
 
-    private State MakeMove(int freeI, int freeJ, (int, int) move)
+    private State MakeMove(int freeIndex, int moveIndex)
     {
-        byte[][] newField = new byte[3][];
-        for (int i = 0; i < 3; i++)
-        {
-            newField[i] = new byte[3];
-            Field[i].CopyTo(newField[i], 0);
-        }
+        int source = Field;
+        int freeIndexMultiplier = (int)Math.Pow(10, 8 - freeIndex);
+        int moveIndexMultiplier = (int)Math.Pow(10, 8 - moveIndex);
+        int number = source % (moveIndexMultiplier * 10) / moveIndexMultiplier;
+        source -= 9 * freeIndexMultiplier;
+        source += number * freeIndexMultiplier;
+        source -= number * moveIndexMultiplier;
+        source += 9 * moveIndexMultiplier;
 
-        (newField[freeI][freeJ], newField[move.Item1][move.Item2]) =
-            (newField[move.Item1][move.Item2], newField[freeI][freeJ]);
-
-        return new State(newField);
+        return new State(source);
     }
-
+    
     public override string ToString()
     {
         string result = "";
-        for (int i = 0; i < Field.Length; i++)
+        string source = Field.ToString();
+        byte ind;
+        for (byte i = 0; i < 3; i++)
         {
-            for (int j = 0; j < Field[i].Length; j++)
+            for (byte j = 0; j < 3; j++)
             {
-                if (Field[i][j] == 9) result += "_ ";
-                else result += Field[i][j] + " ";
+                ind = (byte)(i * 3 + j);
+                if (source[ind] == '9') result += "_ ";
+                else result += source[ind] + " ";
             }
 
             result += "\n";
         }
         return result;
-    }
-
-    public static int GetHash(byte[][] field)
-    {
-        int hash = 0;
-
-        for (int i = 0; i < field.Length; i++)
-        {
-            for (int j = 0; j < field[0].Length; j++)
-            {
-                hash *= 10;
-                hash += field[i][j];
-            }
-        }
-        
-        return hash;
     }
 }

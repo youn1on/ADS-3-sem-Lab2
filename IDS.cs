@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Lab2;
+﻿namespace Lab2;
 
 public class IDS : PathSearcher
 {
@@ -13,7 +11,6 @@ public class IDS : PathSearcher
         {
             Console.Write("Searching on depth of "+limit+"\r");
             (result, cutoffOccurred) = RecursiveDepthLimitedSearch(startNode, limit);
-            GC.Collect();
         }
 
         return result;
@@ -22,7 +19,7 @@ public class IDS : PathSearcher
     private (Node?, bool) RecursiveDepthLimitedSearch(Node node, int depth)
     {
         bool cutoffOccurred = false;
-        if (node.State.Hash==goal) return (node, false);
+        if (node.State.Field==goal) return (node, false);
         if (depth == node.Depth) return (null, true);
         foreach (Node childNode in node.GetChildren())
         {

@@ -11,13 +11,13 @@ public class AStar : PathSearcher
         while (openStates.Count != 0)
         {
             Node current = openStates.Dequeue();
-            if (closedStates.Contains(current.State.Hash)) continue;
-            closedStates.Add(current.State.Hash);
-            if (current.State.Hash==goal) return current;
+            if (closedStates.Contains(current.State.Field)) continue;
+            closedStates.Add(current.State.Field);
+            if (current.State.Field==goal) return current;
             foreach (State nextState in current.State.GetChildren())
             {
-                if (closedStates.Contains(nextState.Hash)) continue;
-                openStates.Enqueue(new Node(nextState, current.Depth + 1, current),
+                if (closedStates.Contains(nextState.Field)) continue;
+                openStates.Enqueue(new Node(nextState, (byte)(current.Depth + 1), current),
                     nextState.ManhattanDistance + current.Depth + 1);
             }
         }
