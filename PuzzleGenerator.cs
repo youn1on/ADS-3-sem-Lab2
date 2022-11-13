@@ -31,12 +31,12 @@ public static class PuzzleGenerator
             source.RemoveAt(index);
         }
 
-        if (SequenceAnalyzer.IsSolvable(sequence) != isSolvable)
+        if (SequenceAnalyzer.IsSolvable(sequence) == isSolvable)
         {
-            (sequence[8], sequence[7]) = (sequence[7], sequence[8]);
+            return sequence;
         }
 
-        return sequence;
+        return GenerateSequence(isSolvable);
     }
     
 }

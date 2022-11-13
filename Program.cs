@@ -1,4 +1,6 @@
-﻿namespace Lab2
+﻿using System.Diagnostics;
+
+namespace Lab2
 {
     internal class Program
     {
@@ -19,9 +21,15 @@
                 Environment.Exit(1);
             }
 
-            Node? goal = AStar.Solve(startState);
-            Stack<State> route = AStar.TraceRoute(goal);
+            PathSearcher pathSearcher = new IDS();
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            Node? goal = pathSearcher.Solve(startState);
+            sw.Stop();
+            Stack<State> route = pathSearcher.TraceRoute(goal);
             ResultOutput.PrintResult(route);
+            Console.WriteLine("Search time: "+sw.ElapsedMilliseconds+" milliseconds");
         }
     }
 }

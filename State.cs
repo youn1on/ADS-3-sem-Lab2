@@ -2,12 +2,11 @@
 
 public struct State
 {
-    public int[][] Field { get; }
+    private byte[][] Field { get; }
     public int ManhattanDistance { get; }
+    public int Hash { get; }
 
-    public int Hash;
-
-    public State(int[][] field)
+    public State(byte[][] field)
     {
         Field = field;
         ManhattanDistance = GetManhattanDistance(field);
@@ -25,7 +24,7 @@ public struct State
         return sequence;
     }
     
-    private static int GetManhattanDistance(int[][] field)
+    private static int GetManhattanDistance(byte[][] field)
     {
         int manhattanDistance = 0;
         for (int i = 0; i < field.Length; i++)
@@ -43,31 +42,34 @@ public struct State
 
     public bool Equals(State state)
     {
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                if (Field[i][j] != state.Field[i][j]) return false;
-            }
-        }
-
-        return true;
+        return Hash == state.Hash;
     }
 
-    public State[] GetChildren()
+    // public State[] GetChildren()
+    // {
+    //     int freeI, freeJ;
+    //     if (!TryFindFreeCell(out freeI, out freeJ))
+    //         throw new ApplicationException("Invalid field structure");
+    //     List<(int, int)> moves = GetPossibleMoves(freeI, freeJ);
+    //     State[] children = new State[moves.Count];
+    //
+    //     for (int i = 0; i < moves.Count; i++)
+    //     {
+    //         children[i] = MakeMove(freeI, freeJ, moves[i]);
+    //     }
+    //
+    //     return children;
+    // }
+    
+    public IEnumerable<State> GetChildren()
     {
         int freeI, freeJ;
         if (!TryFindFreeCell(out freeI, out freeJ))
             throw new ApplicationException("Invalid field structure");
-        List<(int, int)> moves = GetPossibleMoves(freeI, freeJ);
-        State[] children = new State[moves.Count];
-
-        for (int i = 0; i < moves.Count; i++)
+        foreach (var move in GetPossibleMoves(freeI, freeJ))
         {
-            children[i] = MakeMove(freeI, freeJ, moves[i]);
+            yield return MakeMove(freeI, freeJ, move);
         }
-
-        return children;
     }
 
     private bool TryFindFreeCell(out int i, out int j)
@@ -84,22 +86,30 @@ public struct State
         return false;
     }
     
-    private static List<(int, int)> GetPossibleMoves(int freeI, int freeJ)
+    // private static List<(int, int)> GetPossibleMoves(int freeI, int freeJ)
+    // {
+    //     List<(int, int)> moves = new List<(int, int)>();
+    //     if (freeI < 2) moves.Add((freeI+1, freeJ));
+    //     if (freeI > 0) moves.Add((freeI-1, freeJ));
+    //     if (freeJ < 2) moves.Add((freeI, freeJ+1));
+    //     if (freeJ > 0) moves.Add((freeI, freeJ-1));
+    //     return moves;
+    // }
+    
+    private static IEnumerable<(int, int)> GetPossibleMoves(int freeI, int freeJ)
     {
-        List<(int, int)> moves = new List<(int, int)>();
-        if (freeI < 2) moves.Add((freeI+1, freeJ));
-        if (freeI > 0) moves.Add((freeI-1, freeJ));
-        if (freeJ < 2) moves.Add((freeI, freeJ+1));
-        if (freeJ > 0) moves.Add((freeI, freeJ-1));
-        return moves;
+        if (freeI < 2) yield return (freeI+1, freeJ);
+        if (freeI > 0) yield return (freeI-1, freeJ);
+        if (freeJ < 2) yield return (freeI, freeJ+1);
+        if (freeJ > 0) yield return (freeI, freeJ-1);
     }
 
     private State MakeMove(int freeI, int freeJ, (int, int) move)
     {
-        int[][] newField = new int[3][];
+        byte[][] newField = new byte[3][];
         for (int i = 0; i < 3; i++)
         {
-            newField[i] = new int[3];
+            newField[i] = new byte[3];
             Field[i].CopyTo(newField[i], 0);
         }
 
@@ -125,7 +135,7 @@ public struct State
         return result;
     }
 
-    public static int GetHash(int[][] field)
+    public static int GetHash(byte[][] field)
     {
         int hash = 0;
 

@@ -6,7 +6,7 @@ public static class ResultOutput
     {
         int routeLength = route.Count - 1;
         if (routeLength == 0) {
-            Console.WriteLine("Path not found!");
+            Console.WriteLine("Puzzle solution not found!");
             Environment.Exit(1);
         }
         while (route.Count != 0)
