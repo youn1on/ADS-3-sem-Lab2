@@ -23,13 +23,18 @@ namespace Lab2
 
             PathSearcher pathSearcher = new IDS();
 
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            
+            Measurement.Stopwatch.Restart();
             Node? goal = pathSearcher.Solve(startState);
-            sw.Stop();
+            Measurement.Stopwatch.Stop();
             Stack<State> route = pathSearcher.TraceRoute(goal);
             ResultOutput.PrintResult(route);
-            Console.WriteLine("Search time: "+sw.ElapsedMilliseconds+" milliseconds");
+            Console.WriteLine("Search time: "+ Measurement.Stopwatch.ElapsedMilliseconds+" milliseconds");
+            Console.WriteLine("Iterations: " + Measurement.Iterations);
+            Console.WriteLine("Dead ends: " + Measurement.DeadEnds);
+            Console.WriteLine("Amount of states: " + Measurement.AmountOfStates);
+            Console.WriteLine("Amount of states in memory: " + Measurement.AmountOfStatesInMemory);
+            
         }
     }
 }

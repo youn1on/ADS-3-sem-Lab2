@@ -1,11 +1,12 @@
 ﻿namespace Lab2;
 
 public struct State
-{
+{           
     public int Field { get; }
     public State(int field)
     {
         Field = field;
+        Measurement.AmountOfStates++;
     }
 
     public int[] ToSequence()
