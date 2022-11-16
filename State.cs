@@ -2,12 +2,9 @@
 
 public struct State
 {
-    public byte ManhattanDistance { get; }
     public int Field { get; }
-
     public State(int field)
     {
-        ManhattanDistance = GetManhattanDistance(field);
         Field = field;
     }
 
@@ -23,10 +20,10 @@ public struct State
         return sequence;
     }
 
-    private static byte GetManhattanDistance(int field)
+    public byte GetManhattanDistance()
     {
         byte manhattanDistance = 0;
-        for (int source = field, i = 8; i > 0; i--, source /= 10)
+        for (int source = Field, i = 8; i > 0; i--, source /= 10)
         {
             int value = source % 10;
             if (value == 9) continue;

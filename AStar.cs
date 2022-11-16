@@ -18,7 +18,7 @@ public class AStar : PathSearcher
             {
                 if (closedStates.Contains(nextState.Field)) continue;
                 openStates.Enqueue(new Node(nextState, (byte)(current.Depth + 1), current),
-                    nextState.ManhattanDistance + current.Depth + 1);
+                    nextState.GetManhattanDistance() + current.Depth + 1);
             }
         }
 
