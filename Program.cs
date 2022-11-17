@@ -29,12 +29,8 @@ namespace Lab2
             Measurement.Stopwatch.Stop();
             Stack<State> route = pathSearcher.TraceRoute(goal);
             ResultOutput.PrintResult(route);
-            Console.WriteLine("Search time: "+ Measurement.Stopwatch.ElapsedMilliseconds+" milliseconds");
-            Console.WriteLine("Iterations: " + Measurement.Iterations);
-            Console.WriteLine("Dead ends: " + Measurement.DeadEnds);
-            Console.WriteLine("Amount of states: " + Measurement.AmountOfStates);
-            Console.WriteLine("Amount of states in memory: " + Measurement.AmountOfStatesInMemory);
-            
+            ResultOutput.PrintStatistics();
+
         }
     }
 }
