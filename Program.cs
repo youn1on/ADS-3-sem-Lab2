@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel.Design;
+using System.Diagnostics;
 
 namespace Lab2
 {
@@ -7,7 +8,7 @@ namespace Lab2
         static void Main(string[] args)
         {
             string filename;
-            if (UserInput.WantToSelect()) filename = UserInput.GetFilename();
+            if (UserInput.WantToSelectFile()) filename = UserInput.GetFilename();
             else
             {
                 filename = "generated.txt";
@@ -21,16 +22,17 @@ namespace Lab2
                 Environment.Exit(1);
             }
 
-            PathSearcher pathSearcher = new IDS();
+            Console.WriteLine(startState);
 
-            
+            PathSearcher pathSearcher = UserInput.AStarSelected() ? new AStar() : new IDS();
+
             Measurement.Stopwatch.Restart();
             Node? goal = pathSearcher.Solve(startState);
             Measurement.Stopwatch.Stop();
             Stack<State> route = pathSearcher.TraceRoute(goal);
             ResultOutput.PrintResult(route);
-            ResultOutput.PrintStatistics();
-
+            ResultOutput.PrintStatistics(pathSearcher);
+            Console.ReadKey();
         }
     }
 }

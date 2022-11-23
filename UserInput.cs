@@ -13,7 +13,7 @@ public class UserInput
         }
     }
 
-    public static bool WantToSelect()
+    public static bool WantToSelectFile()
     {
         ConsoleKey key;
         while (true)
@@ -27,5 +27,20 @@ public class UserInput
             Console.WriteLine("Invalid key pressed");
         }
        
+    }
+
+    public static bool AStarSelected()
+    {
+        ConsoleKey key;
+        while (true)
+        {
+            Console.WriteLine("Do you want to select A* or IDS? " +
+                              "Press 'a' to choose A* and 'i' to select IDS");
+            key = Console.ReadKey().Key;
+            Console.Write("\r");
+            if (key == ConsoleKey.A) return true;
+            if (key == ConsoleKey.I) return false;
+            Console.WriteLine("Invalid key pressed");
+        }
     }
 }
